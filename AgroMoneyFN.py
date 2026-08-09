@@ -35,12 +35,10 @@ DEMO_CARDS = [
      "b": {"label": "Ignorar as orientações", "money": 2, "health": -1, "contam": 2}},
 ]
 
-# Estado da sessão local
 session = {
     "room_code": None,
     "player_index": 0
 }
-
 
 def load_data():
     if DATA_FILE.exists():
@@ -53,13 +51,10 @@ def load_data():
         "rooms": {}
     }
 
-
 data = load_data()
-
 
 def save():
     DATA_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-
 
 def main(page: ft.Page):
     page.title = "AgroMoney"
@@ -125,14 +120,11 @@ def main(page: ft.Page):
         return ft.Column([
             card(ft.Column([
                 ft.Text("🌱", size=55, text_align=ft.TextAlign.CENTER),
-                ft.Text("AgroMoney", size=40, weight=ft.FontWeight.BOLD, color="#173522",
-                        text_align=ft.TextAlign.CENTER),
-                ft.Text(
-                    "Jogo de tabuleiro + painel digital para acompanhar jogadores, cartas, recursos e impactos ambientais.",
-                    text_align=ft.TextAlign.CENTER, color="#68766D"),
+                ft.Text("AgroMoney", size=40, weight=ft.FontWeight.BOLD, color="#173522", text_align=ft.TextAlign.CENTER),
+                ft.Text("Jogo de tabuleiro + painel digital para acompanhar jogadores, cartas, recursos e impactos ambientais.",
+                        text_align=ft.TextAlign.CENTER, color="#68766D"),
                 ft.Divider(),
-                ft.ElevatedButton("🎲 Criar Nova Partida", on_click=lambda e: go("setup"), bgcolor="#2F7D4A",
-                                  color="white", height=48),
+                ft.ElevatedButton("🎲 Criar Nova Partida", on_click=lambda e: go("setup"), bgcolor="#2F7D4A", color="white", height=48),
                 ft.Text("OU", size=12, color="#68766D", weight=ft.FontWeight.BOLD),
                 ft.Row([
                     join_code_field,
@@ -153,7 +145,7 @@ def main(page: ft.Page):
 
         def add_existing(p_name=""):
             i = len(players)
-            tf = ft.TextField(label=f"Jogador {i + 1}", value=p_name)
+            tf = ft.TextField(label=f"Jogador {i+1}", value=p_name)
             players.append(tf)
             players_col.controls.append(tf)
             page.update()
@@ -169,9 +161,9 @@ def main(page: ft.Page):
                 snack("Máximo de 8 jogadores.")
 
         def start(e):
-            names = [x.value.strip() or f"Jogador {i + 1}" for i, x in enumerate(players)]
+            names = [x.value.strip() or f"Jogador {i+1}" for i, x in enumerate(players)]
             room_code = f"AGRO-{random.randint(1000, 9999)}"
-
+            
             if "rooms" not in data:
                 data["rooms"] = {}
 
@@ -267,8 +259,8 @@ def main(page: ft.Page):
                 ft.Text(f"📍 Casa {p['position'] or 'não registrada'} · 🃏 {len(p['cards'])} carta(s) usada(s)")
             ])),
             card(ft.Column([ft.Text("📜 Meu histórico", size=20, weight=ft.FontWeight.BOLD),
-                            *(ft.Text(x, size=13) for x in reversed(mylog[-20:]))] if mylog else
-                           [ft.Text("Nenhum registro para este jogador.", color="#68766D")]))
+                             *(ft.Text(x, size=13) for x in reversed(mylog[-20:]))] if mylog else
+                            [ft.Text("Nenhum registro para este jogador.", color="#68766D")]))
         ], spacing=14)
 
     def turn():
@@ -290,8 +282,7 @@ def main(page: ft.Page):
         return card(ft.Column([
             ft.Text(f"🎲 Vez de {p['name']}", size=28, weight=ft.FontWeight.BOLD),
             ft.Text("Jogue o dado e mova o peão no tabuleiro físico. Depois informe onde caiu.", color="#68766D"),
-            ft.Container(ft.Text("1. Jogue o dado  ·  2. Mova o peão  ·  3. Escolha o tipo da casa"), bgcolor="#FFF7DB",
-                         padding=14, border_radius=12),
+            ft.Container(ft.Text("1. Jogue o dado  ·  2. Mova o peão  ·  3. Escolha o tipo da casa"), bgcolor="#FFF7DB", padding=14, border_radius=12),
             ft.Text("📍 Onde você caiu?", size=18, weight=ft.FontWeight.BOLD),
             ft.Row(buttons, wrap=True), pos
         ], spacing=14))
@@ -302,7 +293,7 @@ def main(page: ft.Page):
         p = room["players"][room["current"]]
 
         def effects(e):
-            return f"🪙 {e.get('money', 0):+d}  ·  ❤️ {e.get('health', 0):+d}  ·  ☣️ {e.get('contam', 0):+d}"
+            return f"🪙 {e.get('money',0):+d}  ·  ❤️ {e.get('health',0):+d}  ·  ☣️ {e.get('contam',0):+d}"
 
         def apply(key):
             e = c[key]
@@ -333,7 +324,7 @@ def main(page: ft.Page):
 
         page.clean()
         page.add(header(), card(ft.Column([
-            ft.Text(f"{THEMES.get(c['theme'], '🃏')} {c['theme']}", size=13),
+            ft.Text(f"{THEMES.get(c['theme'],'🃏')} {c['theme']}", size=13),
             ft.Text(c["title"], size=28, weight=ft.FontWeight.BOLD),
             ft.Text(c["text"], size=16, color="#68766D"),
             *choices
@@ -341,8 +332,7 @@ def main(page: ft.Page):
         page.update()
 
     def cards_view():
-        tabs = [ft.Text(f"{e} {t}: {len([c for c in data['cards'] if c['theme'] == t])}", weight=ft.FontWeight.BOLD) for
-                t, e in THEMES.items()]
+        tabs = [ft.Text(f"{e} {t}: {len([c for c in data['cards'] if c['theme']==t])}", weight=ft.FontWeight.BOLD) for t, e in THEMES.items()]
         return card(ft.Column([
             ft.Text("🃏 Baralho", size=27, weight=ft.FontWeight.BOLD),
             ft.Text("As cartas podem ser adicionadas aos poucos em Criadores.", color="#68766D"),
@@ -363,15 +353,12 @@ def main(page: ft.Page):
         bc = ft.TextField(label="☣️ Contaminação B", value="0", keyboard_type=ft.KeyboardType.NUMBER)
 
         def num(x):
-            try:
-                return int(x.value or 0)
-            except:
-                return 0
+            try: return int(x.value or 0)
+            except: return 0
 
         def add(e):
             if not title.value.strip(): return snack("Digite o título.")
-            c = {"id": str(uuid.uuid4()), "theme": theme.value, "title": title.value.strip(),
-                 "text": desc.value.strip(),
+            c = {"id": str(uuid.uuid4()), "theme": theme.value, "title": title.value.strip(), "text": desc.value.strip(),
                  "a": {"label": al.value.strip() or "Opção A", "money": num(am), "health": num(ah), "contam": num(ac)}}
             if bl.value.strip():
                 c["b"] = {"label": bl.value.strip(), "money": num(bm), "health": num(bh), "contam": num(bc)}
@@ -386,9 +373,8 @@ def main(page: ft.Page):
             go("admin")
 
         listing = [ft.Container(ft.Row([
-            ft.Text(f"{THEMES.get(c['theme'], '🃏')}", size=22),
-            ft.Column([ft.Text(c["title"], weight=ft.FontWeight.BOLD), ft.Text(c["theme"], size=12, color="#68766D")],
-                      expand=True),
+            ft.Text(f"{THEMES.get(c['theme'],'🃏')}", size=22),
+            ft.Column([ft.Text(c["title"], weight=ft.FontWeight.BOLD), ft.Text(c["theme"], size=12, color="#68766D")], expand=True),
             ft.IconButton(ft.Icons.DELETE_OUTLINE, on_click=lambda e, cid=c["id"]: delete(cid))
         ]), padding=10, border=ft.Border.all(1, "#E2EAE3"), border_radius=12) for c in data["cards"]]
 
@@ -401,33 +387,23 @@ def main(page: ft.Page):
                 ft.Row([bm, bh, bc], wrap=True),
                 ft.ElevatedButton("＋ Salvar carta", on_click=add, bgcolor="#2F7D4A", color="white")
             ])),
-            card(ft.Column(
-                [ft.Text(f"Cartas cadastradas: {len(data['cards'])}", size=20, weight=ft.FontWeight.BOLD), *listing]))
+            card(ft.Column([ft.Text(f"Cartas cadastradas: {len(data['cards'])}", size=20, weight=ft.FontWeight.BOLD), *listing]))
         ], spacing=14)
 
     def render():
         page.clean()
         page.add(header())
         view = data.get("view", "home")
-        if view == "setup":
-            page.add(setup())
-        elif view == "dashboard":
-            page.add(dashboard())
-        elif view == "me":
-            page.add(me())
-        elif view == "turn":
-            page.add(turn())
-        elif view == "cards":
-            page.add(cards_view())
-        elif view == "admin":
-            page.add(admin())
-        else:
-            page.add(home())
+        if view == "setup": page.add(setup())
+        elif view == "dashboard": page.add(dashboard())
+        elif view == "me": page.add(me())
+        elif view == "turn": page.add(turn())
+        elif view == "cards": page.add(cards_view())
+        elif view == "admin": page.add(admin())
+        else: page.add(home())
         page.update()
 
     render()
 
-
 if __name__ == "__main__":
-    # Permite rodar como Web App para publicar na nuvem
     ft.app(target=main)
