@@ -1,5 +1,5 @@
 import flet as ft
-import json, random, uuid
+import json, random, uuid, os
 from pathlib import Path
 
 DATA_FILE = Path("agromoney_data.json")
@@ -406,4 +406,5 @@ def main(page: ft.Page):
     render()
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    port = int(os.environ.get("PORT", 8080))
+    ft.app(target=main, port=port, view=None)
