@@ -3,4 +3,5 @@ WORKDIR /app
 COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8080
-CMD ["flet", "run", "--host", "0.0.0.0", "--port", "8080", "AgroMoneyFN.py"]
+ENV PORT=8080
+CMD ["python", "AgroMoneyFN.py"]
